@@ -2,6 +2,7 @@
 package com.kruger.kdevfull.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -42,6 +44,7 @@ public class JWTProvider {
         Date expiryDate = new Date(now.getTime() + expirationMs);
 
         return Jwts.builder()
+            .claim("roles", authentication.getAuthorities().stream().toList())
             .setSubject(username)
             .setIssuedAt(now)
             .setExpiration(expiryDate)
@@ -49,8 +52,9 @@ public class JWTProvider {
             .compact();
         
     }
-
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    
+    public boolean isTokenValid(
+        String token, UserDetails userDetails) throws ExpiredJwtException {
     
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);

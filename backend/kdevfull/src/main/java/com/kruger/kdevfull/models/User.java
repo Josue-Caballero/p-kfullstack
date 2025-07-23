@@ -7,6 +7,8 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.kruger.kdevfull.enums.Role;
 import com.kruger.kdevfull.enums.State;
@@ -20,6 +22,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -75,4 +79,22 @@ public class User {
     @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL)
     private List<Task> tasks;
 
+    @PrePersist
+    void auditInsert() {
+        
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        this.state = State.ACTIVE;
+        this.createdAt = LocalDateTime.now();
+        this.createdBy = auth.getName();
+
+    }
+
+    @PreUpdate
+    void auditUpdate() {
+        
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        this.updatedBy = auth.getName();
+
+    }
+    
 }

@@ -1,3 +1,4 @@
+
 package com.kruger.kdevfull;
 
 import org.springframework.boot.SpringApplication;

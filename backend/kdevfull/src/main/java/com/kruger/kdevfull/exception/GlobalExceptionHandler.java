@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import io.jsonwebtoken.ExpiredJwtException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     
@@ -34,6 +36,15 @@ public class GlobalExceptionHandler {
         
         String messageError = "Bad credentials";
         return errorResponse(HttpStatus.BAD_REQUEST.value(),  messageError, null);
+    
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler({ ExpiredJwtException.class })
+    public ResponseEntity<ErrorMessage> authorizationException(ExpiredJwtException e) {
+        
+        String messageError = "Unathorized";
+        return errorResponse(HttpStatus.FORBIDDEN.value(),  messageError, null);
     
     }
 

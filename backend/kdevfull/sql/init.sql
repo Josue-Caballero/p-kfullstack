@@ -51,7 +51,7 @@ CREATE TABLE public.tasks (
 	CONSTRAINT FK_PROJECTID_TASK FOREIGN KEY (project_id) REFERENCES public.projects(id)
 );
 
-INSERT INTO users (username, email, password, role, created_at, state)
+INSERT INTO users (username, email, password, role, created_at, created_by, state)
 VALUES (
   'admin',
   'admin@kruger.com',
@@ -59,5 +59,18 @@ VALUES (
   '$2a$10$6E2E4diA8fiHWKWKZr3JQ.lbURDiVBaGlse96n6U21fH2CXyrsa4W',
   'ADMIN',
   now(),
+  'admin',
+  'ACTIVE'
+);
+
+INSERT INTO users (username, email, password, role, created_at, created_by, state)
+VALUES (
+  'user',
+  'user@kruger.com',
+  -- Este password debe estar ya encriptado si usas Spring Security es 12345
+  '$2a$10$6E2E4diA8fiHWKWKZr3JQ.lbURDiVBaGlse96n6U21fH2CXyrsa4W',
+  'USER',
+  now(),
+  'admin',
   'ACTIVE'
 );

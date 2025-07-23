@@ -10,6 +10,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -24,6 +26,8 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.kruger.kdevfull.enums.State;
 import com.kruger.kdevfull.enums.TaskStatus;
@@ -70,5 +74,23 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
+
+    @PrePersist
+    void auditInsert() {
+        
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        this.state = State.ACTIVE;
+        this.createdAt = LocalDateTime.now();
+        this.createdBy = auth.getName();
+
+    }
+
+    @PreUpdate
+    void auditUpdate() {
+        
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        this.updatedBy = auth.getName();
+
+    }
 
 }

@@ -21,4 +21,12 @@ public class ErrorMessage {
 
     private List<String> details;
 
+    @Override
+    public String toString() {
+        return String.format("{\"code\": %d, \"timestamp\": \"%s\", \"message\": \"%s\"}",
+            this.code,
+            this.timestamp,
+            this.message);
+    }
+
 }
