@@ -28,10 +28,12 @@ public class AuthServiceToken implements AuthServiceI {
                 user.getUsername(), 
                 user.getPassword()
             );
-            
-        authManager.authenticate(authToken);
+        
 
-        return new UserLoginResponse(jwtProvider.generateToken(authToken), "refresh_token");
+        return new UserLoginResponse(
+            jwtProvider.generateToken(authManager.authenticate(authToken))
+            , "refresh_token"
+        );
         
     }
     

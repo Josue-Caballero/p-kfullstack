@@ -13,9 +13,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.kruger.kdevfull.service.impl.CurrentUserService;
+
 import java.security.Key;
 import java.util.Date;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -28,6 +29,8 @@ public class JWTProvider {
     private long expirationMs;
 
     private Key key;
+
+    private final CurrentUserService authContext;
 
     @PostConstruct
     public void init() {
@@ -44,7 +47,11 @@ public class JWTProvider {
         Date expiryDate = new Date(now.getTime() + expirationMs);
 
         return Jwts.builder()
-            .claim("roles", authentication.getAuthorities().stream().toList())
+            .claim(
+                "roles", 
+                authentication.getAuthorities().stream()
+                .map(a -> a.getAuthority() ).toList()
+            )
             .setSubject(username)
             .setIssuedAt(now)
             .setExpiration(expiryDate)

@@ -2,6 +2,10 @@
 package com.kruger.kdevfull.dto.project;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.kruger.kdevfull.dto.user.UserResponse;
+import com.kruger.kdevfull.models.Task;
 
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +18,12 @@ public class ProjectResponse {
     
     private String name;
     
-    private String description;
+    private UserResponse owner;
     
+    private String description;
+
     private LocalDateTime createdAt;
+
+    private List<Task> tasks;
 
 }

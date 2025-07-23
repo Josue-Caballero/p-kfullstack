@@ -1,7 +1,9 @@
 
 package com.kruger.kdevfull.dto.project;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -14,5 +16,8 @@ public class ProjectRequest {
 
     private String description;
 
-}
+    @NotNull(message = "{project.owner.required}")
+    @Min(value = 0, message = "{project.owner.value}")
+    private Long owner;
 
+}
