@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: postgres:12.22
+    container_name: kdevfull-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: k13st2
+    ports:
+      - "5435:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kdevfull-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      DB_LOGS: false
+      DB_DDL: update
+      DB_USER: postgres
+      DB_PASSWORD: k13st2
+      DB_URL: jdbc:postgresql://db:5432/postgres
+      TOKEN_SECRET: 27ecde8e-ee57-4764-b02f-aa2f89de1ef1
+      TOKEN_EXPIRATION_TIME: 100000
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
