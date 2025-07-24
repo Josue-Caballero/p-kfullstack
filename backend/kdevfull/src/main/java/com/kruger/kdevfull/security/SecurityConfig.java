@@ -48,7 +48,7 @@ public class SecurityConfig {
                     "/v3/api-docs/**").permitAll()
                 .requestMatchers(
                     HttpMethod.POST, 
-                    "/user").hasRole("ADMIN")
+                    "/users").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .exceptionHandling(ex -> ex

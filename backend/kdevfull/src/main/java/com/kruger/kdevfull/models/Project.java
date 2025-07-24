@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.kruger.kdevfull.enums.State;
 
 import java.time.LocalDateTime;
@@ -46,9 +47,11 @@ public class Project {
     
     @ManyToOne
     @JoinColumn(name = "owner_id")
+    @JsonIgnoreProperties({"projects", "tasks", "password", "createdBy", "updatedBy", "state", "createdAt"})
     private User owner;
-
+    
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"project", "assignedTo", "createdBy", "updatedBy", "state", "createdAt"})
     private List<Task> tasks;
 
     @PrePersist

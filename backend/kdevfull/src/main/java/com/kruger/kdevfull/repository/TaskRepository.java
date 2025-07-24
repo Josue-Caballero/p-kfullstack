@@ -1,0 +1,22 @@
+package com.kruger.kdevfull.repository;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.kruger.kdevfull.enums.State;
+import com.kruger.kdevfull.models.Project;
+import com.kruger.kdevfull.models.Task;
+
+public interface TaskRepository extends JpaRepository<Task, Long> {
+
+    public List<Task> findByProjectId(Long id);
+
+    public List<Task> findByAssignedToUsername(String username);
+
+    public List<Project> findAllByCreatedByAndStateNot(String createdBy, State state);
+
+    public Optional<Project> findByIdAndCreatedBy(Long id, String createdBy);
+
+}

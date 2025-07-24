@@ -10,6 +10,9 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kruger.kdevfull.enums.Role;
 import com.kruger.kdevfull.enums.State;
 
@@ -54,6 +57,7 @@ public class User {
     private String email;
 
     @NotBlank
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -74,9 +78,11 @@ public class User {
     private State state = State.ACTIVE;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @JsonIgnore()
     private List<Project> projects;
 
     @OneToMany(mappedBy = "assignedTo", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"assignedTo", "project", "createdBy", "updatedBy", "state", "createdAt"})
     private List<Task> tasks;
 
     @PrePersist

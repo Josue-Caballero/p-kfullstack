@@ -29,6 +29,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.kruger.kdevfull.enums.State;
 import com.kruger.kdevfull.enums.TaskStatus;
 
@@ -62,17 +63,19 @@ public class Task {
 
     @LastModifiedBy
     private String updatedBy;
-
+    
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private State state = State.ACTIVE;
     
     @ManyToOne
     @JoinColumn(name = "assigned_to_id")
+    @JsonIgnoreProperties({"projects", "tasks", "password", "createdBy", "updatedBy", "state", "createdAt"})
     private User assignedTo;
-
+    
     @ManyToOne
     @JoinColumn(name = "project_id")
+    @JsonIgnoreProperties({"tasks", "owner", "createdBy", "updatedBy", "state", "createdAt"})
     private Project project;
 
     @PrePersist

@@ -1,14 +1,12 @@
 package com.kruger.kdevfull.service.impl;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.kruger.kdevfull.dto.project.ProjectRequest;
 import com.kruger.kdevfull.dto.project.ProjectResponse;
-import com.kruger.kdevfull.dto.project.ProjectUpdateRequest;
 import com.kruger.kdevfull.enums.State;
 import com.kruger.kdevfull.mapper.ProjectMapper;
 import com.kruger.kdevfull.mapper.UserMapper;
@@ -25,7 +23,13 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ProjectService implements ProjectServiceI {
-    
+
+    @Value("${app.projectnotfoud}")
+    private String ProjectNotFoundMessage;
+
+    @Value("${app.ownernotfoud}")
+    private String UserNotFoundMessage;
+
     private final UserMapper userMapper;
 
     private final ProjectMapper projectMapper;
@@ -40,7 +44,7 @@ public class ProjectService implements ProjectServiceI {
     public ProjectResponse create(ProjectRequest request) {
         
         User owner = userRepository.findByUsername(authContext.getUsername())
-            .orElseThrow(() -> new EntityNotFoundException("Owner not found"));
+            .orElseThrow(() -> new EntityNotFoundException(UserNotFoundMessage));
 
         Project project = projectMapper.toEntity(request);
         project.setOwner(owner);
@@ -69,19 +73,19 @@ public class ProjectService implements ProjectServiceI {
     }
 
     @Override
-    public ProjectResponse update(Long id, ProjectUpdateRequest request) {
+    public ProjectResponse update(Long id, ProjectRequest request) {
         
         Project project = projectRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Proyecto no encontrado"));
+            .orElseThrow(() -> new EntityNotFoundException(ProjectNotFoundMessage));
 
-        // if (!project.getOwner().getUsername().equals(username)) {
-        
-            // throw new AccessDeniedException("No tienes permiso para modificar este proyecto");
-        
-        // }
-
-        project.setName(request.getName());
-        project.setDescription(request.getDescription());
+        project.setName(request.getName() != null ? request.getName() : project.getName());
+        project.setState(request.getState() != null ? request.getState() : project.getState());
+        project.setDescription(request.getDescription() != null ? request.getDescription() 
+            : project.getDescription() );
+        project.setOwner(
+            request.getOwner() == null ? project.getOwner() : userRepository.findById(request.getOwner())
+            .orElseThrow(() -> new EntityNotFoundException(UserNotFoundMessage))
+        );
         
         return projectMapper.toResponse(projectRepository.save(project));
 
@@ -91,11 +95,11 @@ public class ProjectService implements ProjectServiceI {
     public ProjectResponse delete(Long id) {
         
         Project project = projectRepository.findByIdAndCreatedBy(id, authContext.getUsername())
-            .orElseThrow(() -> new EntityNotFoundException("Project not found"));
+            .orElseThrow(() -> new EntityNotFoundException(ProjectNotFoundMessage));
 
         project.setState(State.DELETED);
 
-        return projectMapper.toResponse(project);
+        return projectMapper.toResponse(projectRepository.save(project));
         
     }
     

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kruger.kdevfull.dto.project.ProjectRequest;
 import com.kruger.kdevfull.dto.project.ProjectResponse;
-import com.kruger.kdevfull.dto.project.ProjectUpdateRequest;
+import com.kruger.kdevfull.dto.project.ProjectRequest.CreateProject;
+import com.kruger.kdevfull.dto.project.ProjectRequest.UpdateProject;
 import com.kruger.kdevfull.service.ProjectServiceI;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -31,7 +32,7 @@ public class ProjectController {
 
     @PostMapping
     public ResponseEntity<ProjectResponse> create(
-        @RequestBody @Valid ProjectRequest request) {
+        @RequestBody @Validated(value = { CreateProject.class })ProjectRequest request) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(projectService.create(request));
@@ -49,7 +50,7 @@ public class ProjectController {
     @PutMapping("/{id}")
     public ResponseEntity<ProjectResponse> update(
         @PathVariable Long id,
-        @RequestBody @Valid ProjectUpdateRequest request) {
+        @RequestBody @Validated(value = { UpdateProject.class }) ProjectRequest request) {
 
         return ResponseEntity.ok(projectService.update(id, request));
 
