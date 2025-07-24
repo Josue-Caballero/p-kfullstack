@@ -77,9 +77,9 @@ VALUES (
 
 INSERT INTO public.projects (created_at,created_by,description,"name",state,updated_by,owner_id) 
 VALUES ('2025-07-23 18:13:05.868555','user','Tareas de sprint backlog','Nuevo proyecto','ACTIVE','user',2),
-	('2025-07-23 21:40:01.304465','admin','string','string','ACTIVE',NULL,1);
+	('2025-07-23 21:40:01.304465','admin','Identificar y solucionar problemas de código','Enumerar tareas de cada fuente','ACTIVE',NULL,1);
 
 INSERT INTO public.tasks (created_at,created_by,description,due_date,state,status,title,updated_by,assigned_to_id,project_id) 
 VALUES ('2025-07-23 21:11:23.623154','admin','Define and model MER','2025-07-24','ACTIVE','PENDING','Database diagram',NULL,2,1),
 	 ('2025-07-23 21:15:58.240381','user','Define and model MER','2025-07-24','ACTIVE','PENDING','Database diagram',NULL,2,1),
-	 ('2025-07-23 21:40:40.312645','admin','Nueva tarea','2025-07-24','DELETED','PENDING','Actualización rápida','admin',2,2);
+	 ('2025-07-23 21:40:40.312645','admin','New task','2025-07-24','DELETED','PENDING','Actualización rápida','admin',2,2);
